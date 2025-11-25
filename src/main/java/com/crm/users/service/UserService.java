@@ -20,16 +20,16 @@ public class UserService {
     public Flux<User> getAllUsers() {
         return userRepository.findAll();
     }
-
-    public Mono<User> createUser(@RequestBody User user) {
-        User newUser = new User();
-        newUser.setName(user.getName());
-        newUser.setMobile(user.getMobile());
-        return roleRepository.findById(user.getRoleId()).flatMap(role -> {
-            newUser.setRoleId(role.getId());
-            newUser.setPermissions(role.getPermissions());
-            return userRepository.save(newUser);
-        })
-        .switchIfEmpty(Mono.error(new IllegalArgumentException("Role not found")));
-    }
+//
+//    public Mono<User> createUser(@RequestBody User user) {
+//        User newUser = new User();
+//        newUser.setName(user.getName());
+//        newUser.setMobile(user.getMobile());
+//        return roleRepository.findById(user.getRoleId()).flatMap(role -> {
+//            newUser.setRoleId(role.getId());
+//            newUser.setPermissions(role.getPermissions());
+//            return userRepository.save(newUser);
+//        })
+//        .switchIfEmpty(Mono.error(new IllegalArgumentException("Role not found")));
+//    }
 }

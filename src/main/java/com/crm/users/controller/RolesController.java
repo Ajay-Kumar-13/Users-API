@@ -1,5 +1,6 @@
 package com.crm.users.controller;
 
+import com.crm.users.DTO.RoleDTO;
 import com.crm.users.model.Role;
 import com.crm.users.service.RolesService;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,7 @@ public class RolesController {
     }
 
     @PostMapping("/newrole")
-    public Mono<Role> createRole(@RequestBody Role role) {
+    public Mono<Role> createRole(@RequestBody RoleDTO role) {
         return rolesService.createRole(role);
     }
 

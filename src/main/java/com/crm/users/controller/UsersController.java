@@ -19,8 +19,8 @@ public class UsersController {
         return userService.getAllUsers();
     }
 
-    @PostMapping("/newuser")
-    public Mono<User> createUser(@RequestBody User user) {
-        return userService.createUser(user);
-    }
+//    @PostMapping("/newuser")
+//    public Mono<User> createUser(@RequestBody User user) {
+//        return userService.createUser(user);
+//    }
 }

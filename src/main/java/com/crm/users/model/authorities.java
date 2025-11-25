@@ -5,10 +5,12 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.util.UUID;
+
 @Data
-@Table("roles")
-public class Role {
+@Table("authorities")
+public class authorities {
+
     @Id
-    private UUID role_id;
-    private String role_name;
+    private UUID authority_id;
+    private String authority_name;
 }
