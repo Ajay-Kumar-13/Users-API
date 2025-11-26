@@ -2,6 +2,7 @@ package com.crm.users.model;
 
 import lombok.Data;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.util.UUID;
@@ -11,6 +12,9 @@ import java.util.UUID;
 public class Authorities {
 
     @Id
-    private UUID authority_id;
-    private String authority_name;
+    @Column("authority_id")
+    private UUID authorityId;
+
+    @Column("authority_name")
+    private String authorityName;
 }

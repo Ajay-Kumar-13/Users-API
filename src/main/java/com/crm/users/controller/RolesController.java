@@ -1,6 +1,7 @@
 package com.crm.users.controller;
 
 import com.crm.users.DTO.CreateRoleRequest;
+import com.crm.users.DTO.CreateRoleResponse;
 import com.crm.users.model.Role;
 import com.crm.users.service.RolesService;
 import lombok.RequiredArgsConstructor;
@@ -16,12 +17,12 @@ public class RolesController {
     private final RolesService rolesService;
 
     @GetMapping
-    public Flux<Role> getAllRoles() {
+    public Flux<CreateRoleResponse> getAllRoles() {
         return rolesService.getAllRoles();
     }
 
     @PostMapping("/newrole")
-    public Mono<Role> createRole(@RequestBody CreateRoleRequest role) {
+    public Mono<CreateRoleResponse> createRole(@RequestBody CreateRoleRequest role) {
         return rolesService.createRole(role);
     }
 

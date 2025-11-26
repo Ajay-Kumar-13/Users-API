@@ -1,6 +1,7 @@
 package com.crm.users.controller;
 
 import com.crm.users.DTO.CreateAuthorityRequest;
+import com.crm.users.DTO.CreateAuthorityResponse;
 import com.crm.users.model.Authorities;
 import com.crm.users.service.AuthoritiesService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +17,12 @@ public class AuthoritiesController {
     private AuthoritiesService authoritiesService;
 
     @GetMapping
-    public Flux<Authorities> getAllAuthorities() {
+    public Flux<CreateAuthorityResponse> getAllAuthorities() {
         return authoritiesService.getAllAuthorities();
     }
 
     @PostMapping("/new-authority")
-    public Mono<Authorities> createAuthority(@RequestBody CreateAuthorityRequest authority) {
+    public Mono<CreateAuthorityResponse> createAuthority(@RequestBody CreateAuthorityRequest authority) {
         return authoritiesService.createAuthority(authority);
     }
 }
