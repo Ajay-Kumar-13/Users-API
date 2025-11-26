@@ -1,6 +1,6 @@
 package com.crm.users.service;
 
-import com.crm.users.DTO.RoleDTO;
+import com.crm.users.DTO.CreateRoleRequest;
 import com.crm.users.model.Role;
 import com.crm.users.model.RoleAuthorities;
 import com.crm.users.repository.RoleAuthoritiesRepository;
@@ -21,13 +21,13 @@ public class RolesService {
         return  roleRepository.findAll();
     }
 
-    public Mono<Role> createRole(RoleDTO roleDTO) {
+    public Mono<Role> createRole(CreateRoleRequest createRoleRequest) {
 
         Role role = new Role();
-        role.setRole_name(roleDTO.getRole_name());
+        role.setRole_name(createRoleRequest.getRole_name());
         try {
            return roleRepository.save(role).flatMap(r ->
-                   Flux.fromIterable(roleDTO.getAuthorities()).flatMap(auth -> roleAuthorities.save(new RoleAuthorities(r.getRole_id(), auth)))
+                   Flux.fromIterable(createRoleRequest.getAuthorities()).flatMap(auth -> roleAuthorities.save(new RoleAuthorities(r.getRole_id(), auth)))
                            .then(Mono.just(r))
            );
         } catch (Exception e) {

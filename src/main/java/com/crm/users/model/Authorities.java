@@ -8,7 +8,7 @@ import java.util.UUID;
 
 @Data
 @Table("authorities")
-public class authorities {
+public class Authorities {
 
     @Id
     private UUID authority_id;
