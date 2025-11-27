@@ -16,5 +16,5 @@ public class Authorities {
     private UUID authorityId;
 
     @Column("authority_name")
-    private String authorityName;
+    private Authority authorityName;
 }

@@ -44,7 +44,7 @@ public class UserService {
     private Mono<List<KeyValuePair>> fetchAuthorities(UUID roleId) {
         return roleAuthoritiesRepository.findAllByRid(roleId).flatMap(roleAuthority ->
                 authorityRepository.findById(roleAuthority.getAid()).map(authority ->
-                        new KeyValuePair(authority.getAuthorityId(), authority.getAuthorityName())))
+                        new KeyValuePair(authority.getAuthorityId(), authority.getAuthorityName().name())))
                 .collectList();
     }
 

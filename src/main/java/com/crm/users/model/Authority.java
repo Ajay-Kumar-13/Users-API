@@ -1,6 +1,6 @@
 package com.crm.users.model;
 
-public enum Permission {
+public enum Authority {
     CREATE,
     READ,
     UPDATE,
