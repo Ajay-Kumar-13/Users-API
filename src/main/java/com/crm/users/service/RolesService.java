@@ -2,6 +2,9 @@ package com.crm.users.service;
 
 import com.crm.users.DTO.CreateRoleRequest;
 import com.crm.users.DTO.CreateRoleResponse;
+import com.crm.users.Exception.Exception;
+import com.crm.users.Exception.RoleAuthoritiesException;
+import com.crm.users.Exception.RolesException;
 import com.crm.users.model.Role;
 import com.crm.users.model.RoleAuthorities;
 import com.crm.users.repository.RoleAuthoritiesRepository;
@@ -11,6 +14,8 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class RolesService {
@@ -19,24 +24,26 @@ public class RolesService {
     private final RoleAuthoritiesRepository roleAuthorities;
 
     public Flux<CreateRoleResponse> getAllRoles() {
-        return  roleRepository.findAll().map(role -> new CreateRoleResponse(role.getRoleId(), role.getRoleName()));
+        return  roleRepository.findAll().map(role -> new CreateRoleResponse(role.getRoleId(), role.getRoleName()))
+                .onErrorResume(err -> Mono.error(new RolesException(com.crm.users.Exception.Exception.ROLES_EXCEPTION, err)));
+    }
+
+    private Mono<RoleAuthorities> saveRoleAuthorities(Role r, UUID auth) {
+        return roleAuthorities.save(new RoleAuthorities(r.getRoleId(), auth))
+                .onErrorResume(err -> Mono.error(new RoleAuthoritiesException(Exception.ROLE_AUTHORITIES_EXCEPTION, err)));
     }
 
     public Mono<CreateRoleResponse> createRole(CreateRoleRequest createRoleRequest) {
-
+        if(createRoleRequest.getRoleName().isBlank()) {
+            return Mono.error(new RolesException(Exception.INVALID_ARGUMENTS, new Error("Invalid role name received when creating a role!")));
+        }
         Role role = new Role();
         role.setRoleName(createRoleRequest.getRoleName());
-        try {
-           return roleRepository.save(role).flatMap(r ->
-                   Flux.fromIterable(createRoleRequest.getAuthorities())
-                           .flatMap(auth -> roleAuthorities.save(new RoleAuthorities(r.getRoleId(), auth)))
-                           .then( Mono.just(new CreateRoleResponse(r.getRoleId(), r.getRoleName())))
-
-           );
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
+       return roleRepository.save(role).flatMap(r ->
+               Flux.fromIterable(createRoleRequest.getAuthorities())
+                       .flatMap(auth -> saveRoleAuthorities(r, auth))
+                       .then( Mono.just(new CreateRoleResponse(r.getRoleId(), r.getRoleName()))))
+               .onErrorResume(err -> Mono.error(new RolesException(Exception.ROLES_EXCEPTION, err)));
     }
 
 }

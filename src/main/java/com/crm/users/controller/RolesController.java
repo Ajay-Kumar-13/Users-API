@@ -4,6 +4,7 @@ import com.crm.users.DTO.CreateRoleRequest;
 import com.crm.users.DTO.CreateRoleResponse;
 import com.crm.users.model.Role;
 import com.crm.users.service.RolesService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -22,7 +23,7 @@ public class RolesController {
     }
 
     @PostMapping("/newrole")
-    public Mono<CreateRoleResponse> createRole(@RequestBody CreateRoleRequest role) {
+    public Mono<CreateRoleResponse> createRole(@Valid @RequestBody CreateRoleRequest role) {
         return rolesService.createRole(role);
     }
 
