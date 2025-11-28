@@ -4,6 +4,7 @@ import com.crm.users.DTO.CreateAuthorityRequest;
 import com.crm.users.DTO.CreateAuthorityResponse;
 import com.crm.users.model.Authorities;
 import com.crm.users.service.AuthoritiesService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -22,7 +23,7 @@ public class AuthoritiesController {
     }
 
     @PostMapping("/new-authority")
-    public Mono<CreateAuthorityResponse> createAuthority(@RequestBody CreateAuthorityRequest authority) {
+    public Mono<CreateAuthorityResponse> createAuthority(@Valid @RequestBody CreateAuthorityRequest authority) {
         return authoritiesService.createAuthority(authority);
     }
 }
