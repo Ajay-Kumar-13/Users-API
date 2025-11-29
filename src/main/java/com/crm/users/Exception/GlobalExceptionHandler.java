@@ -33,4 +33,10 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ErrorResponse(e.getMessage(), e.getCause().getMessage()));
     }
+
+    @ExceptionHandler(UserAuthoritiesException.class)
+    public ResponseEntity<?> userAuthoritiesException(java.lang.Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ErrorResponse(e.getMessage(), e.getCause().getMessage()));
+    }
 }
