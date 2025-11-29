@@ -9,6 +9,7 @@ import com.crm.users.model.Role;
 import com.crm.users.model.RoleAuthorities;
 import com.crm.users.repository.RoleAuthoritiesRepository;
 import com.crm.users.repository.RoleRepository;
+import com.crm.users.util.DatabaseErrorUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -25,12 +26,12 @@ public class RolesService {
 
     public Flux<CreateRoleResponse> getAllRoles() {
         return  roleRepository.findAll().map(role -> new CreateRoleResponse(role.getRoleId(), role.getRoleName()))
-                .onErrorResume(err -> Mono.error(new RolesException(com.crm.users.Exception.Exception.ROLES_EXCEPTION, err)));
+                .onErrorResume(DatabaseErrorUtil::handleError);
     }
 
     private Mono<RoleAuthorities> saveRoleAuthorities(Role r, UUID auth) {
         return roleAuthorities.save(new RoleAuthorities(r.getRoleId(), auth))
-                .onErrorResume(err -> Mono.error(new RoleAuthoritiesException(Exception.ROLE_AUTHORITIES_EXCEPTION, err)));
+                .onErrorResume(DatabaseErrorUtil::handleError);
     }
 
     public Mono<CreateRoleResponse> createRole(CreateRoleRequest createRoleRequest) {
@@ -43,7 +44,7 @@ public class RolesService {
                Flux.fromIterable(createRoleRequest.getAuthorities())
                        .flatMap(auth -> saveRoleAuthorities(r, auth))
                        .then( Mono.just(new CreateRoleResponse(r.getRoleId(), r.getRoleName()))))
-               .onErrorResume(err -> Mono.error(new RolesException(Exception.ROLES_EXCEPTION, err)));
+               .onErrorResume(DatabaseErrorUtil::handleError);
     }
 
 }
