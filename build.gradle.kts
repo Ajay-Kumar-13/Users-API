@@ -33,6 +33,9 @@ dependencies {
 	// Optional: Reactive validation
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 
+	//	Spring Security
+	implementation("org.springframework.boot:spring-boot-starter-security")
+
 	// Test
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("io.projectreactor:reactor-test")
