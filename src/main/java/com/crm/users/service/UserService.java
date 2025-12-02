@@ -8,6 +8,7 @@ import com.crm.users.repository.*;
 import com.crm.users.util.DatabaseErrorUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 import reactor.core.publisher.Flux;
@@ -30,12 +31,14 @@ public class UserService {
 
    private final AuthoritiesService authoritiesService;
 
+   private final PasswordEncoder passwordEncoder;
+
     public Flux<CreateUserResponse> getAllUsers() {
         return userRepository.findAll().flatMap(user ->
             fetchRole(user.getRole_id()).flatMap(role -> {
                 KeyValuePair userRole = new KeyValuePair(role.getRoleId(), role.getRoleName());
                 return fetchAuthorities(role.getRoleId(), user.getId()).map(roleAuthorities ->
-                        new CreateUserResponse(user.getId(), user.getName(), userRole, roleAuthorities));
+                        new CreateUserResponse(user.getId(), user.getUsername(), userRole, roleAuthorities));
         }))
         .onErrorResume(DatabaseErrorUtil::handleError);
     }
@@ -88,13 +91,14 @@ public class UserService {
             return Mono.error(new UsersException(Exception.INVALID_ARGUMENTS, new Error("Invalid role id received when creating an user!")));
         }
         User newUser = new User();
-        newUser.setName(user.getUsername());
+        newUser.setUsername(user.getUsername());
+        newUser.setPassword(passwordEncoder.encode(user.getPassword()));
         return fetchRole(user.getRoleId()).flatMap(role -> {
             newUser.setRole_id(role.getRoleId());
             return userRepository.save(newUser).flatMap(savedUser -> {
                 KeyValuePair userRole = new KeyValuePair(role.getRoleId(), role.getRoleName());
                 return fetchAuthorities(role.getRoleId(), savedUser.getId()).flatMap(roleAuthorities ->
-                        Mono.just(new CreateUserResponse(savedUser.getId(), savedUser.getName(), userRole, roleAuthorities)));
+                        Mono.just(new CreateUserResponse(savedUser.getId(), savedUser.getUsername(), userRole, roleAuthorities)));
             });
         })
         .onErrorResume(DatabaseErrorUtil::handleError);
@@ -105,7 +109,7 @@ public class UserService {
                 fetchRole(savedUser.getRole_id()).flatMap(role -> {
             KeyValuePair userRole = new KeyValuePair(role.getRoleId(), role.getRoleName());
             return fetchAuthorities(role.getRoleId(), savedUser.getId()).flatMap(roleAuthorities ->
-                    Mono.just(new CreateUserResponse(savedUser.getId(), savedUser.getName(), userRole, roleAuthorities)));
+                    Mono.just(new CreateUserResponse(savedUser.getId(), savedUser.getUsername(), userRole, roleAuthorities)));
         }))
         .onErrorResume(DatabaseErrorUtil::handleError);
     }

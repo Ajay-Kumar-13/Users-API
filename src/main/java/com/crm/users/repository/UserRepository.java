@@ -10,4 +10,5 @@ import java.util.UUID;
 @Repository
 public interface UserRepository extends R2dbcRepository<User, Long> {
     Mono<User> findById(UUID id);
+    Mono<User> findByUsername(String username);
 }

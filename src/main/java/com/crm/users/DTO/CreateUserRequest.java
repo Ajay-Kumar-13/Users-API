@@ -10,5 +10,7 @@ public class CreateUserRequest {
     @NotNull
     private String username;
     @NotNull
+    private String password;
+    @NotNull
     private UUID roleId;
 }
