@@ -15,7 +15,8 @@ public class User {
     @Id
     private UUID id;
 
-    private String name;
+    private String username;
+    private String password;
     private UUID role_id;
     private LocalDateTime created_at;
 }
