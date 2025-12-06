@@ -2,16 +2,17 @@ package com.crm.users.controller;
 
 import com.crm.users.DTO.CreateAuthorityRequest;
 import com.crm.users.DTO.CreateAuthorityResponse;
-import com.crm.users.model.Authorities;
 import com.crm.users.service.AuthoritiesService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/admin/authorities")
+@PreAuthorize("hasRole('ADMIN')")
 public class AuthoritiesController {
 
     @Autowired
