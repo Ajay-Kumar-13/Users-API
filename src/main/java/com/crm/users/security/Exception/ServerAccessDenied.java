@@ -1,4 +1,4 @@
-package com.crm.users.service.security.Exception;
+package com.crm.users.security.Exception;
 
 import com.crm.users.DTO.ErrorResponse;
 import com.crm.users.Exception.Exception;

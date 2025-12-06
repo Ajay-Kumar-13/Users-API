@@ -104,7 +104,7 @@ public class UserService {
         .onErrorResume(DatabaseErrorUtil::handleError);
     }
 
-    private Mono<CreateUserResponse> getUserById(UUID userId) {
+    public Mono<CreateUserResponse> getUserById(UUID userId) {
         return userRepository.findById(userId).flatMap(savedUser ->
                 fetchRole(savedUser.getRole_id()).flatMap(role -> {
             KeyValuePair userRole = new KeyValuePair(role.getRoleId(), role.getRoleName());
@@ -112,6 +112,16 @@ public class UserService {
                     Mono.just(new CreateUserResponse(savedUser.getId(), savedUser.getUsername(), userRole, roleAuthorities)));
         }))
         .onErrorResume(DatabaseErrorUtil::handleError);
+    }
+
+    public Mono<CreateUserResponse> getUserByUsername(String username) {
+        return userRepository.findByUsername(username).flatMap(savedUser ->
+                        fetchRole(savedUser.getRole_id()).flatMap(role -> {
+                            KeyValuePair userRole = new KeyValuePair(role.getRoleId(), role.getRoleName());
+                            return fetchAuthorities(role.getRoleId(), savedUser.getId()).flatMap(roleAuthorities ->
+                                    Mono.just(new CreateUserResponse(savedUser.getId(), savedUser.getUsername(), userRole, roleAuthorities)));
+                        }))
+                .onErrorResume(DatabaseErrorUtil::handleError);
     }
 
     public Mono<CreateUserResponse> overridePermissions(CreateUserAuthorities userAuthorities, UUID userId){
