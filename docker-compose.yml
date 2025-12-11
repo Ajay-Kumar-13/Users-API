@@ -1,0 +1,26 @@
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    networks:
+      - aa-users-api
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: ajay
+      POSTGRES_PASSWORD: ajay
+      POSTGRES_DB: users
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./src/main/resources:/docker-entrypoint-initdb.d
+    networks:
+      - aa-users-api
+
+networks:
+  aa-users-api:
+    driver: bridge

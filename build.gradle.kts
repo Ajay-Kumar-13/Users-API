@@ -26,7 +26,10 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
 	implementation("org.postgresql:r2dbc-postgresql:1.0.4.RELEASE")
 
-	//	Lombok
+    // JDBC ONLY for schema.sql + data.sql initialization
+    runtimeOnly("org.postgresql:postgresql")
+
+    //	Lombok
 	compileOnly("org.projectlombok:lombok")
 	annotationProcessor("org.projectlombok:lombok")
 
