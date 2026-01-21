@@ -1,0 +1,44 @@
+spring:
+  application:
+    name: users
+  app:
+    jwtSecret: aGVsbG93b3JsZHRoaXNpc2FzZWN1cmVzZWNyZXQxMjM0NTY=
+    jwtExpiration: 86400000
+
+  # --- R2DBC ---
+  r2dbc:
+    url: "r2dbc:postgresql://crmusers.ch4g8uw2igs6.ap-south-1.rds.amazonaws.com:5432/crmusers"
+    username: "ajay"
+    password: "Ym>Uup9UK_o[t)z1:P4n6AtTvT23"
+
+  # --- JDBC (used only for Flyway) ---
+  datasource:
+    url: "jdbc:postgresql://crmusers.ch4g8uw2igs6.ap-south-1.rds.amazonaws.com:5432/crmusers"
+    username: "ajay"
+    password: "Ym>Uup9UK_o[t)z1:P4n6AtTvT23"
+
+  # --- Flyway ---
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+    url: "jdbc:postgresql://crmusers.ch4g8uw2igs6.ap-south-1.rds.amazonaws.com:5432/crmusers"
+    user: "ajay"
+    password: "Ym>Uup9UK_o[t)z1:P4n6AtTvT23"
+
+  # --- Disable JPA completely ---
+  jpa:
+    hibernate:
+      ddl-auto: none
+
+# --- LOGGING ---
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.boot.context.config: TRACE
+    com.crm.users: DEBUG
+    org.flywaydb: DEBUG
+
+# --- AWS ---
+aws:
+  secretname: "rds!db-efa93a37-8e6e-4d85-b060-7ee1cba6b723"
