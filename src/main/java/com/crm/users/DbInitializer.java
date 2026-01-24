@@ -25,7 +25,8 @@ public class DbInitializer {
     @PostConstruct
     public void init() {
         try {
-            DbSecret secret = dbSecretService.getDbSecret(secretName);
+            log.info("Trying to fetch secret of ", secretName);
+            DbSecret secret = dbSecretService.getDbSecret("rds!db-efa93a37-8e6e-4d85-b060-7ee1cba6b723");
 
             System.setProperty("DB_USERNAME", secret.getUsername());
             System.setProperty("DB_PASSWORD", secret.getPassword());
