@@ -9,13 +9,13 @@ spring:
   r2dbc:
     url: "r2dbc:postgresql://crmusers.ch4g8uw2igs6.ap-south-1.rds.amazonaws.com:5432/crmusers"
     username: "ajay"
-    password: "Ym>Uup9UK_o[t)z1:P4n6AtTvT23"
+    password: ")PNW0N]Oe9z#9x10MYdKqj|BYdd("
 
   # --- JDBC (used only for Flyway) ---
   datasource:
     url: "jdbc:postgresql://crmusers.ch4g8uw2igs6.ap-south-1.rds.amazonaws.com:5432/crmusers"
     username: "ajay"
-    password: "Ym>Uup9UK_o[t)z1:P4n6AtTvT23"
+    password: ")PNW0N]Oe9z#9x10MYdKqj|BYdd("
 
   # --- Flyway ---
   flyway:
@@ -24,7 +24,7 @@ spring:
     locations: classpath:db/migration
     url: "jdbc:postgresql://crmusers.ch4g8uw2igs6.ap-south-1.rds.amazonaws.com:5432/crmusers"
     user: "ajay"
-    password: "Ym>Uup9UK_o[t)z1:P4n6AtTvT23"
+    password: ")PNW0N]Oe9z#9x10MYdKqj|BYdd("
 
   # --- Disable JPA completely ---
   jpa:
