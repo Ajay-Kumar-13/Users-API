@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: users
+
+  r2dbc:
+    url: r2dbc:postgresql://users-postgres-1:5432/users
+    username: ajay
+    password: ajay
+
+  datasource:
+    url: jdbc:postgresql://users-postgres-1:5432/users
+    username: ajay
+    password: ajay
+
+  sql:
+    init:
+      mode: always
+      platform: postgres
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+
+  app:
+    jwtSecret: aGVsbG93b3JsZHRoaXNpc2FzZWN1cmVzZWNyZXQxMjM0NTY=
+    jwtExpiration: 86400000
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    com.crm.users: DEBUG
