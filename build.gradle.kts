@@ -48,7 +48,7 @@ dependencies {
     implementation("software.amazon.awssdk:sts")
     implementation(platform("software.amazon.awssdk:bom:2.25.28"))
     implementation("software.amazon.awssdk:secretsmanager")
-
+    implementation("io.awspring.cloud:spring-cloud-aws-starter-secrets-manager:3.1.1")
     //  Flyway
     implementation("org.flywaydb:flyway-core:11.20.0")
     implementation("org.flywaydb:flyway-database-postgresql")
