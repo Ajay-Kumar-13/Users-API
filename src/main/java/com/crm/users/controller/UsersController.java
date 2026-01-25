@@ -21,6 +21,7 @@ public class UsersController {
     @Autowired
     UserService userService;
 
+    @PreAuthorize("hasAuthority('READ')")
     @GetMapping()
     public Flux<CreateUserResponse> getAllUsers() {
         return userService.getAllUsers();
