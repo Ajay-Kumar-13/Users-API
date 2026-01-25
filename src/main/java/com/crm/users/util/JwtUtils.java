@@ -33,6 +33,7 @@ public class JwtUtils {
         return Jwts.builder()
                 .subject(user.getUsername())
                 .claim("roles", user.getRole().getName())
+                .claim("authorities", user.getAuthorities().stream().map(authority -> authority.getName()).toList())
                 .expiration(new Date(System.currentTimeMillis() + Long.parseLong(jwtExpiration)))
                 .signWith(key())
                 .compact();

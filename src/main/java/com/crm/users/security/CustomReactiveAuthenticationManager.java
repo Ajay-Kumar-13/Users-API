@@ -10,6 +10,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 import io.jsonwebtoken.Claims;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -25,6 +27,16 @@ public class CustomReactiveAuthenticationManager implements ReactiveAuthenticati
         String token = authentication.getCredentials().toString();
         Claims claims = jwtUtils.getClaims(token);
         String role = claims.get("roles").toString();
-        return Mono.just(new UsernamePasswordAuthenticationToken(claims.getSubject(), null, List.of(new SimpleGrantedAuthority("ROLE_"+role))));
+        List<String> authorities = claims.get("authorities", List.class);
+        List<SimpleGrantedAuthority> finalAuthorities = new ArrayList<>();
+        if(role != null) {
+            finalAuthorities.add(new SimpleGrantedAuthority("ROLE_"+role));
+        }
+        if(authorities != null) {
+            finalAuthorities.addAll(
+              authorities.stream().map(SimpleGrantedAuthority::new).toList()
+            );
+        }
+        return Mono.just(new UsernamePasswordAuthenticationToken(claims.getSubject(), null, finalAuthorities));
     }
 }
