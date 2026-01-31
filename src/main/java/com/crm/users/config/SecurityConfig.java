@@ -4,6 +4,7 @@ import com.crm.users.security.CustomReactiveAuthenticationManager;
 import com.crm.users.security.JwtSecurityContextRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
@@ -51,12 +52,14 @@ public class SecurityConfig {
     ) {
 
         return http
+                .cors(Customizer.withDefaults())
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .exceptionHandling(ex ->
                         ex.authenticationEntryPoint(serverAuthenticationEntryPoint)
                                 .accessDeniedHandler(serverAccessDeniedHandler)
                 )
                 .authorizeExchange(auth -> auth
+                        .pathMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .pathMatchers("/auth/**").permitAll()
                         .anyExchange().authenticated()
                 )
