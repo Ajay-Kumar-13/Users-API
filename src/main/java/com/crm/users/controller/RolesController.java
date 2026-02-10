@@ -14,16 +14,18 @@ import reactor.core.publisher.Mono;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/admin/roles")
-@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("hasAnyRole('ADMIN', 'ROOT')")
 public class RolesController {
 
     private final RolesService rolesService;
 
+    @PreAuthorize("hasAnyAuthority('ROLE_READ', 'READ')")
     @GetMapping
     public Flux<CreateRoleResponse> getAllRoles() {
         return rolesService.getAllRoles();
     }
 
+    @PreAuthorize("hasAnyAuthority('ROLE_CREATE', 'CREATE')")
     @PostMapping("/newrole")
     public Mono<CreateRoleResponse> createRole(@Valid @RequestBody CreateRoleRequest role) {
         return rolesService.createRole(role);

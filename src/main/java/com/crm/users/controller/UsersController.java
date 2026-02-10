@@ -15,23 +15,25 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/admin/users")
-@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("hasAnyRole('ADMIN', 'ROOT')")
 public class UsersController {
 
     @Autowired
     UserService userService;
 
-    @PreAuthorize("hasAuthority('READ')")
+    @PreAuthorize("hasAnyAuthority('USER_READ', 'READ')")
     @GetMapping()
     public Flux<CreateUserResponse> getAllUsers() {
         return userService.getAllUsers();
     }
 
+    @PreAuthorize("hasAnyAuthority('USER_CREATE', 'CREATE')")
     @PostMapping("/newuser")
     public Mono<CreateUserResponse> createUser(@Valid @RequestBody CreateUserRequest user) {
         return userService.createUser(user);
     }
 
+    @PreAuthorize("hasAnyAuthority('USER_UPDATE', 'UPDATE')")
     @PostMapping("/{userId}/override-permissions")
     public Mono<CreateUserResponse> overridePermissions(
             @Valid

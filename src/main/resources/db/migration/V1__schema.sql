@@ -10,12 +10,12 @@ create table IF NOT EXISTS public.users(
 
 create table IF NOT EXISTS public.roles(
 	role_id uuid primary key default gen_random_uuid(),
-	role_name varchar(20) not null unique
+	role_name varchar(50) not null unique
 );
 
 create table IF NOT EXISTS public.authorities(
 	authority_id uuid primary key default gen_random_uuid(),
-	authority_name varchar(10) not null  unique
+	authority_name varchar(50) not null  unique
 );
 
 create table IF NOT EXISTS public.role_authorities(
