@@ -23,6 +23,7 @@ WHERE NOT EXISTS (
 INSERT INTO public.users (username, password, role_id)
 SELECT
     'superuser',
+    'superuser@gmail.com',
     '$2a$10$/7KsUP2ZhkU5A/CrHSj4H.g2AHUOthearSQGFipDvxk9lu5CVvMNm',
     (SELECT role_id FROM roles WHERE role_name = 'ADMIN')
 WHERE NOT EXISTS (

@@ -16,7 +16,9 @@ public class User {
     private UUID id;
 
     private String username;
+    private String email;
     private String password;
     private UUID role_id;
+    private boolean is_account_active;
     private LocalDateTime created_at;
 }
