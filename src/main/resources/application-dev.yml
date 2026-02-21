@@ -11,23 +11,28 @@ spring:
 
   # --- R2DBC ---
   r2dbc:
-    url: "r2dbc:postgresql://crmusers.ch4g8uw2igs6.ap-south-1.rds.amazonaws.com:5432/crmusers?sslmode=require"
+    url: "r2dbc:postgresql://crm-users.cvs2iqyo4vrk.ap-south-1.rds.amazonaws.com:5432/crmusers?sslmode=require"
 
   # --- JDBC (used only for Flyway) ---
   datasource:
-    url: "jdbc:postgresql://crmusers.ch4g8uw2igs6.ap-south-1.rds.amazonaws.com:5432/crmusers?sslmode=require"
+    url: "jdbc:postgresql://crm-users.cvs2iqyo4vrk.ap-south-1.rds.amazonaws.com:5432/crmusers?sslmode=require"
 
   # --- Flyway ---
   flyway:
     enabled: true
     baseline-on-migrate: true
     locations: classpath:db/migration
-    url: "jdbc:postgresql://crmusers.ch4g8uw2igs6.ap-south-1.rds.amazonaws.com:5432/crmusers?sslmode=require"
+    url: "jdbc:postgresql://crm-users.cvs2iqyo4vrk.ap-south-1.rds.amazonaws.com:5432/crmusers?sslmode=require"
 
   # --- Disable JPA completely ---
   jpa:
     hibernate:
       ddl-auto: none
+
+  cloud:
+    aws:
+      region:
+        static: ap-south-1
 
 # --- LOGGING ---
 logging:
@@ -37,8 +42,3 @@ logging:
     org.springframework.core.env: TRACE
     com.crm.users: DEBUG
     org.flywaydb: DEBUG
-
-# --- AWS ---
-aws:
-  region: ap-south-1
-  secretname: "rds!db-efa93a37-8e6e-4d85-b060-7ee1cba6b723"
