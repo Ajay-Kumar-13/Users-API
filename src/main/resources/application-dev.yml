@@ -42,3 +42,13 @@ logging:
     org.springframework.core.env: TRACE
     com.crm.users: DEBUG
     org.flywaydb: DEBUG
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      probes:
+        enabled: true

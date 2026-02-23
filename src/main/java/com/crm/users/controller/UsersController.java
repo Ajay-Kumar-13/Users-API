@@ -14,7 +14,7 @@ import reactor.core.publisher.Mono;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/admin/users")
+@RequestMapping("/api/admin/users")
 @PreAuthorize("hasAnyRole('ADMIN', 'ROOT')")
 public class UsersController {
 

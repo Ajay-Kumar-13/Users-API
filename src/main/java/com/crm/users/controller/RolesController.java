@@ -13,7 +13,7 @@ import reactor.core.publisher.Mono;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/admin/roles")
+@RequestMapping("/api/admin/roles")
 @PreAuthorize("hasAnyRole('ADMIN', 'ROOT')")
 public class RolesController {
 

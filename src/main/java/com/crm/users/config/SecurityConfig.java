@@ -52,7 +52,6 @@ public class SecurityConfig {
     ) {
 
         return http
-                .cors(Customizer.withDefaults())
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .exceptionHandling(ex ->
                         ex.authenticationEntryPoint(serverAuthenticationEntryPoint)
@@ -60,7 +59,8 @@ public class SecurityConfig {
                 )
                 .authorizeExchange(auth -> auth
                         .pathMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .pathMatchers("/auth/**").permitAll()
+                        .pathMatchers("/actuator/**").permitAll()
+                        .pathMatchers("/api/auth/**").permitAll()
                         .anyExchange().authenticated()
                 )
                 .authenticationManager(authenticationManager)
