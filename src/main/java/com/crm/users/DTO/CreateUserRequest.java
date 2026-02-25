@@ -13,4 +13,8 @@ public class CreateUserRequest {
     private String password;
     @NotNull
     private UUID roleId;
+    @NotNull
+    private String email;
+
+    private boolean accountActive;
 }

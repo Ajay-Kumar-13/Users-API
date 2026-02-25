@@ -1,8 +1,10 @@
 create table IF NOT EXISTS public.users(
 	id uuid primary key default gen_random_uuid(),
 	username varchar(20),
+	email varchar(255) unique,
 	password varchar(255),
 	role_id uuid,
+	is_account_active boolean not null default true,
 	created_at timestamp default now()
 );
 

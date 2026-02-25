@@ -38,7 +38,7 @@ public class UserService {
             fetchRole(user.getRole_id()).flatMap(role -> {
                 KeyValuePair userRole = new KeyValuePair(role.getRoleId(), role.getRoleName());
                 return fetchAuthorities(role.getRoleId(), user.getId()).map(roleAuthorities ->
-                        new CreateUserResponse(user.getId(), user.getUsername(), userRole, roleAuthorities));
+                        new CreateUserResponse(user.getId(), user.getUsername(), user.getEmail(), userRole, roleAuthorities, user.is_account_active()));
         }))
         .onErrorResume(DatabaseErrorUtil::handleError);
     }
@@ -83,7 +83,7 @@ public class UserService {
                 .onErrorResume(DatabaseErrorUtil::handleError);
     }
 
-    public Mono<CreateUserResponse> createUser(@RequestBody CreateUserRequest user) {
+    public Mono<CreateUserResponse> createUser(CreateUserRequest user) {
         if(user.getUsername().isBlank()) {
             return Mono.error(new UsersException(Exception.INVALID_ARGUMENTS, new Error("Invalid username received when creating an user!")));
         }
@@ -93,12 +93,14 @@ public class UserService {
         User newUser = new User();
         newUser.setUsername(user.getUsername());
         newUser.setPassword(passwordEncoder.encode(user.getPassword()));
+        newUser.setEmail(user.getEmail());
+        newUser.set_account_active(user.isAccountActive());
         return fetchRole(user.getRoleId()).flatMap(role -> {
             newUser.setRole_id(role.getRoleId());
             return userRepository.save(newUser).flatMap(savedUser -> {
                 KeyValuePair userRole = new KeyValuePair(role.getRoleId(), role.getRoleName());
                 return fetchAuthorities(role.getRoleId(), savedUser.getId()).flatMap(roleAuthorities ->
-                        Mono.just(new CreateUserResponse(savedUser.getId(), savedUser.getUsername(), userRole, roleAuthorities)));
+                        Mono.just(new CreateUserResponse(savedUser.getId(), savedUser.getUsername(), savedUser.getEmail(), userRole, roleAuthorities, savedUser.is_account_active())));
             });
         })
         .onErrorResume(DatabaseErrorUtil::handleError);
@@ -109,7 +111,7 @@ public class UserService {
                 fetchRole(savedUser.getRole_id()).flatMap(role -> {
             KeyValuePair userRole = new KeyValuePair(role.getRoleId(), role.getRoleName());
             return fetchAuthorities(role.getRoleId(), savedUser.getId()).flatMap(roleAuthorities ->
-                    Mono.just(new CreateUserResponse(savedUser.getId(), savedUser.getUsername(), userRole, roleAuthorities)));
+                    Mono.just(new CreateUserResponse(savedUser.getId(), savedUser.getUsername(), savedUser.getEmail(), userRole, roleAuthorities, savedUser.is_account_active())));
         }))
         .onErrorResume(DatabaseErrorUtil::handleError);
     }
@@ -119,7 +121,7 @@ public class UserService {
                         fetchRole(savedUser.getRole_id()).flatMap(role -> {
                             KeyValuePair userRole = new KeyValuePair(role.getRoleId(), role.getRoleName());
                             return fetchAuthorities(role.getRoleId(), savedUser.getId()).flatMap(roleAuthorities ->
-                                    Mono.just(new CreateUserResponse(savedUser.getId(), savedUser.getUsername(), userRole, roleAuthorities)));
+                                    Mono.just(new CreateUserResponse(savedUser.getId(), savedUser.getUsername(), savedUser.getEmail(), userRole, roleAuthorities, savedUser.is_account_active())));
                         }))
                 .onErrorResume(DatabaseErrorUtil::handleError);
     }

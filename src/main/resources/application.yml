@@ -29,3 +29,13 @@ logging:
   level:
     org.springframework.security: DEBUG
     com.crm.users: DEBUG
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      probes:
+        enabled: true

@@ -4,6 +4,7 @@ import com.crm.users.security.CustomReactiveAuthenticationManager;
 import com.crm.users.security.JwtSecurityContextRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
@@ -57,7 +58,9 @@ public class SecurityConfig {
                                 .accessDeniedHandler(serverAccessDeniedHandler)
                 )
                 .authorizeExchange(auth -> auth
-                        .pathMatchers("/auth/**").permitAll()
+                        .pathMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .pathMatchers("/actuator/**").permitAll()
+                        .pathMatchers("/api/auth/**").permitAll()
                         .anyExchange().authenticated()
                 )
                 .authenticationManager(authenticationManager)
