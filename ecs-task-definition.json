@@ -4,8 +4,8 @@
   "requiresCompatibilities": [
     "FARGATE"
   ],
-  "cpu": "512",
-  "memory": "1024",
+  "cpu": "1024",
+  "memory": "3072",
   "executionRoleArn": "arn:aws:iam::192606545899:role/ECSTaskExecutionRole",
   "taskRoleArn": "arn:aws:iam::192606545899:role/ECSTaskExecutionRole",
   "containerDefinitions": [
@@ -19,16 +19,25 @@
           "protocol": "tcp"
         }
       ],
-      "environment": [],
+      "environment": [
+        {
+          "name": "JWT_SECRET",
+          "value": "PLACEHOLDER_JWT"
+        },
+        {
+          "name": "SPRING_PROFILES_ACTIVE",
+          "value": "dev"
+        }
+      ],
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
           "awslogs-group": "/ecs/users_api_task",
           "awslogs-region": "ap-south-1",
-          "awslogs-stream-prefix": "ecs"
+          "awslogs-stream-prefix": "ecs",
+          "awslogs-create-group": "true"
         }
       }
     }
   ]
 }
-

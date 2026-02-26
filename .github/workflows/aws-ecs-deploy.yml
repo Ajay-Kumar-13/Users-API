@@ -62,6 +62,10 @@ jobs:
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
+      - name: Inject JWT secret into task definition
+        run: |
+          sed -i 's|PLACEHOLDER_JWT|${{ secrets.JWT_SECRET }}|g' ecs-task-definition.json
+
       - name: Render Amazon ECS task definition
         id: render-task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1
