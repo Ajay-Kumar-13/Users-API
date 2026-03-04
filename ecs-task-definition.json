@@ -1,0 +1,43 @@
+{
+  "family": "users_api_task", 
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "cpu": "1024",
+  "memory": "3072",
+  "executionRoleArn": "arn:aws:iam::192606545899:role/ECSTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::192606545899:role/ECSTaskExecutionRole",
+  "containerDefinitions": [
+    { 
+      "name": "users_api",
+      "image": "REPLACED-BY-GITHUB-ACTIONS",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 8080,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        {
+          "name": "JWT_SECRET",
+          "value": "PLACEHOLDER_JWT"
+        },
+        {
+          "name": "SPRING_PROFILES_ACTIVE",
+          "value": "dev"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/users_api_task",
+          "awslogs-region": "ap-south-1",
+          "awslogs-stream-prefix": "ecs",
+          "awslogs-create-group": "true"
+        }
+      }
+    }
+  ]
+}
