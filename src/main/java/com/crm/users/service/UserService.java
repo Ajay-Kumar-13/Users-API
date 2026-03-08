@@ -6,6 +6,7 @@ import com.crm.users.Exception.Exception;
 import com.crm.users.model.*;
 import com.crm.users.repository.*;
 import com.crm.users.util.DatabaseErrorUtil;
+import com.crm.users.util.SystemUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,6 +29,7 @@ public class UserService {
    private final RoleAuthoritiesRepository roleAuthoritiesRepository;
    private final AuthorityRepository authorityRepository;
    private final UserAuthorityRespository userAuthorityRespository;
+   private final SystemUtils systemUtils;
 
    private final AuthoritiesService authoritiesService;
 
@@ -35,22 +37,14 @@ public class UserService {
 
     public Flux<CreateUserResponse> getAllUsers() {
         return userRepository.findAll().flatMap(user ->
-            fetchRole(user.getRole_id()).flatMap(role -> {
+            systemUtils.fetchRole(user.getRole_id()).flatMap(role -> {
                 KeyValuePair userRole = new KeyValuePair(role.getRoleId(), role.getRoleName());
-                return fetchAuthorities(role.getRoleId(), user.getId()).map(roleAuthorities ->
+                return systemUtils.fetchAuthorities(role.getRoleId())
+                        .flatMap(keyValuePairs -> overrideAuthorities(keyValuePairs,  user.getId()))
+                        .map(roleAuthorities ->
                         new CreateUserResponse(user.getId(), user.getUsername(), user.getEmail(), userRole, roleAuthorities, user.is_account_active()));
         }))
         .onErrorResume(DatabaseErrorUtil::handleError);
-    }
-
-    private Mono<Role> fetchRole(UUID roleId) {
-        return roleRepository.findByRoleId(roleId)
-                .onErrorResume(DatabaseErrorUtil::handleError);
-    }
-
-    private Flux<RoleAuthorities> fetchRoleAuthorities(UUID roleId) {
-        return roleAuthoritiesRepository.findAllByRid(roleId)
-                .onErrorResume(DatabaseErrorUtil::handleError);
     }
 
     private Mono<List<KeyValuePair>> overrideAuthorities( List<KeyValuePair> roleAuthorities, UUID userId) {
@@ -74,15 +68,6 @@ public class UserService {
         .then(Mono.fromCallable(() -> updatedRoleAuthorities));
     }
 
-    private Mono<List<KeyValuePair>> fetchAuthorities(UUID roleId, UUID userId) {
-        return fetchRoleAuthorities(roleId).flatMap(roleAuthority ->
-                authorityRepository.findById(roleAuthority.getAid()).map(authority ->
-                        new KeyValuePair(authority.getAuthorityId(), authority.getAuthorityName().name())))
-                .collectList()
-                .flatMap(keyValuePairs -> overrideAuthorities(keyValuePairs, userId))
-                .onErrorResume(DatabaseErrorUtil::handleError);
-    }
-
     public Mono<CreateUserResponse> createUser(CreateUserRequest user) {
         if(user.getUsername().isBlank()) {
             return Mono.error(new UsersException(Exception.INVALID_ARGUMENTS, new Error("Invalid username received when creating an user!")));
@@ -95,11 +80,11 @@ public class UserService {
         newUser.setPassword(passwordEncoder.encode(user.getPassword()));
         newUser.setEmail(user.getEmail());
         newUser.set_account_active(user.isAccountActive());
-        return fetchRole(user.getRoleId()).flatMap(role -> {
+        return systemUtils.fetchRole(user.getRoleId()).flatMap(role -> {
             newUser.setRole_id(role.getRoleId());
             return userRepository.save(newUser).flatMap(savedUser -> {
                 KeyValuePair userRole = new KeyValuePair(role.getRoleId(), role.getRoleName());
-                return fetchAuthorities(role.getRoleId(), savedUser.getId()).flatMap(roleAuthorities ->
+                return systemUtils.fetchAuthorities(role.getRoleId()).flatMap(roleAuthorities ->
                         Mono.just(new CreateUserResponse(savedUser.getId(), savedUser.getUsername(), savedUser.getEmail(), userRole, roleAuthorities, savedUser.is_account_active())));
             });
         })
@@ -108,9 +93,11 @@ public class UserService {
 
     public Mono<CreateUserResponse> getUserById(UUID userId) {
         return userRepository.findById(userId).flatMap(savedUser ->
-                fetchRole(savedUser.getRole_id()).flatMap(role -> {
+                systemUtils.fetchRole(savedUser.getRole_id()).flatMap(role -> {
             KeyValuePair userRole = new KeyValuePair(role.getRoleId(), role.getRoleName());
-            return fetchAuthorities(role.getRoleId(), savedUser.getId()).flatMap(roleAuthorities ->
+            return systemUtils.fetchAuthorities(role.getRoleId())
+                    .flatMap(keyValuePairs -> overrideAuthorities(keyValuePairs,  savedUser.getId()))
+                    .flatMap(roleAuthorities ->
                     Mono.just(new CreateUserResponse(savedUser.getId(), savedUser.getUsername(), savedUser.getEmail(), userRole, roleAuthorities, savedUser.is_account_active())));
         }))
         .onErrorResume(DatabaseErrorUtil::handleError);
@@ -118,9 +105,11 @@ public class UserService {
 
     public Mono<CreateUserResponse> getUserByUsername(String username) {
         return userRepository.findByUsername(username).flatMap(savedUser ->
-                        fetchRole(savedUser.getRole_id()).flatMap(role -> {
+                        systemUtils.fetchRole(savedUser.getRole_id()).flatMap(role -> {
                             KeyValuePair userRole = new KeyValuePair(role.getRoleId(), role.getRoleName());
-                            return fetchAuthorities(role.getRoleId(), savedUser.getId()).flatMap(roleAuthorities ->
+                            return systemUtils.fetchAuthorities(role.getRoleId())
+                                    .flatMap(keyValuePairs -> overrideAuthorities(keyValuePairs,  savedUser.getId()))
+                                    .flatMap(roleAuthorities ->
                                     Mono.just(new CreateUserResponse(savedUser.getId(), savedUser.getUsername(), savedUser.getEmail(), userRole, roleAuthorities, savedUser.is_account_active())));
                         }))
                 .onErrorResume(DatabaseErrorUtil::handleError);

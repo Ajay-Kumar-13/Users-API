@@ -28,7 +28,7 @@ public class UsersController {
     }
 
     @PreAuthorize("hasAnyAuthority('USER_CREATE', 'CREATE')")
-    @PostMapping("/newuser")
+    @PostMapping()
     public Mono<CreateUserResponse> createUser(@Valid @RequestBody CreateUserRequest user) {
         return userService.createUser(user);
     }
