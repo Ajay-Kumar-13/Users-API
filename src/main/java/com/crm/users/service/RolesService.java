@@ -25,7 +25,7 @@ public class RolesService {
     private final RoleAuthoritiesRepository roleAuthorities;
 
     public Flux<CreateRoleResponse> getAllRoles() {
-        return  roleRepository.findAll().map(role -> new CreateRoleResponse(role.getRoleId(), role.getRoleName()))
+        return  roleRepository.findAll().map(role -> new CreateRoleResponse(role.getRoleId(), role.getRoleName(), role.getDescription()))
                 .onErrorResume(DatabaseErrorUtil::handleError);
     }
 
@@ -43,7 +43,7 @@ public class RolesService {
        return roleRepository.save(role).flatMap(r ->
                Flux.fromIterable(createRoleRequest.getAuthorities())
                        .flatMap(auth -> saveRoleAuthorities(r, auth))
-                       .then( Mono.just(new CreateRoleResponse(r.getRoleId(), r.getRoleName()))))
+                       .then( Mono.just(new CreateRoleResponse(r.getRoleId(), r.getRoleName(), role.getDescription()))))
                .onErrorResume(DatabaseErrorUtil::handleError);
     }
 

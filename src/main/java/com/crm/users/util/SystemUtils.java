@@ -34,7 +34,7 @@ public class SystemUtils {
     public Mono<List<KeyValuePair>> fetchAuthorities(UUID roleId) {
         return fetchRoleAuthorities(roleId).flatMap(roleAuthority ->
                         authorityRepository.findById(roleAuthority.getAid()).map(authority ->
-                                new KeyValuePair(authority.getAuthorityId(), authority.getAuthorityName().name())))
+                                new KeyValuePair(authority.getAuthorityId(), authority.getAuthorityName().name(), authority.getDescription())))
                 .collectList()
                 .onErrorResume(DatabaseErrorUtil::handleError);
     }

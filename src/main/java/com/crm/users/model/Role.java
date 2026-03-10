@@ -13,6 +13,9 @@ public class Role {
     @Column("role_id")
     private UUID roleId;
 
+    @Column("role_desc")
+    private String description;
+
     @Column("role_name")
     private String roleName;
 }

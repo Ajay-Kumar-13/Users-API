@@ -1,25 +1,25 @@
-INSERT INTO public.authorities (authority_name)
+INSERT INTO public.authorities (authority_name, authority_desc)
 VALUES
-    ('CREATE'),
-    ('READ'),
-    ('UPDATE'),
-    ('DELETE'),
+    ('CREATE', 'Allows the user to create new records in the system.'),
+    ('READ', 'Allows the user to read records in the system.'),
+    ('UPDATE', 'Allows the user to update records in the system.'),
+    ('DELETE', 'Allows the user to delete records in the system.'),
 
-    ('USER_CREATE'),
-    ('USER_READ'),
-    ('USER_UPDATE'),
-    ('USER_DELETE'),
+    ('USER_CREATE', 'Allows the user to create new users in the system.'),
+    ('USER_READ', 'Allows the user to read users in the system.'),
+    ('USER_UPDATE', 'Allows the user to update user records in the system.'),
+    ('USER_DELETE', 'Allows the user to delete users in the system.'),
 
-    ('ROLE_CREATE'),
-    ('ROLE_READ'),
-    ('ROLE_UPDATE'),
-    ('ROLE_DELETE')
+    ('ROLE_CREATE', 'Allows the user to create new roles in the system.'),
+    ('ROLE_READ', 'Allows the user to read roles in the system.'),
+    ('ROLE_UPDATE', 'Allows the user to update roles in the system.'),
+    ('ROLE_DELETE', 'Allows the user to delete roles in the system.')
 ON CONFLICT (authority_name) DO NOTHING;
 
 
 
-INSERT INTO public.roles (role_name)
-VALUES ('ROOT')
+INSERT INTO public.roles (role_name, role_desc)
+VALUES ('ROOT', 'This role has all permissions and can perform any action in the system.')
 ON CONFLICT (role_name) DO NOTHING;
 
 

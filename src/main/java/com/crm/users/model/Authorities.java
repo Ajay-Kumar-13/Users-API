@@ -15,6 +15,9 @@ public class Authorities {
     @Column("authority_id")
     private UUID authorityId;
 
+    @Column("authority_desc")
+    private String description;
+
     @Column("authority_name")
     private Authority authorityName;
 }

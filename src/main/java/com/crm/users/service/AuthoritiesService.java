@@ -22,18 +22,18 @@ public class AuthoritiesService {
 
     public Flux<CreateAuthorityResponse> getAllAuthorities() {
         return authorityRepository.findAll()
-                .map(authority -> new CreateAuthorityResponse(authority.getAuthorityId(), authority.getAuthorityName().name()))
+                .map(authority -> new CreateAuthorityResponse(authority.getAuthorityId(), authority.getAuthorityName().name(), authority.getDescription()))
                 .onErrorResume(DatabaseErrorUtil::handleError);
     }
 
     protected Mono<CreateAuthorityResponse> fetchAuthorityByName(Authority auth) {
-        return authorityRepository.findByAuthorityName(auth).map(authorities -> new CreateAuthorityResponse(authorities.getAuthorityId(), authorities.getAuthorityName().name()))
+        return authorityRepository.findByAuthorityName(auth).map(authorities -> new CreateAuthorityResponse(authorities.getAuthorityId(), authorities.getAuthorityName().name(), authorities.getDescription()))
                 .onErrorResume(DatabaseErrorUtil::handleError);
 
     }
 
     protected Mono<CreateAuthorityResponse> fetchAuthorityById(UUID authId) {
-        return authorityRepository.findById(authId).map(authorities -> new CreateAuthorityResponse(authorities.getAuthorityId(), authorities.getAuthorityName().name()))
+        return authorityRepository.findById(authId).map(authorities -> new CreateAuthorityResponse(authorities.getAuthorityId(), authorities.getAuthorityName().name(), authorities.getDescription()))
                 .onErrorResume(DatabaseErrorUtil::handleError);
     }
 
@@ -45,7 +45,7 @@ public class AuthoritiesService {
         newAuthorities.setAuthorityName(Authority.valueOf(authority.getAuthorityName()));
         return authorityRepository.save(newAuthorities)
                 .flatMap(savedAuthority ->
-                        Mono.just(new CreateAuthorityResponse(savedAuthority.getAuthorityId(), savedAuthority.getAuthorityName().name())))
+                        Mono.just(new CreateAuthorityResponse(savedAuthority.getAuthorityId(), savedAuthority.getAuthorityName().name(), savedAuthority.getDescription())))
                 .onErrorResume(DatabaseErrorUtil::handleError);
     }
 }
