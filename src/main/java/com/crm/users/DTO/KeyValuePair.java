@@ -10,4 +10,5 @@ import java.util.UUID;
 public class KeyValuePair {
     private UUID id;
     private String name;
+    private String description;
 }

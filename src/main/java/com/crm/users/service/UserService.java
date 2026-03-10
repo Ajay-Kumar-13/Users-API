@@ -38,7 +38,7 @@ public class UserService {
     public Flux<CreateUserResponse> getAllUsers() {
         return userRepository.findAll().flatMap(user ->
             systemUtils.fetchRole(user.getRole_id()).flatMap(role -> {
-                KeyValuePair userRole = new KeyValuePair(role.getRoleId(), role.getRoleName());
+                KeyValuePair userRole = new KeyValuePair(role.getRoleId(), role.getRoleName(), role.getDescription());
                 return systemUtils.fetchAuthorities(role.getRoleId())
                         .flatMap(keyValuePairs -> overrideAuthorities(keyValuePairs,  user.getId()))
                         .map(roleAuthorities ->
@@ -53,12 +53,12 @@ public class UserService {
             boolean hasAuthority = roleAuthorities.stream().anyMatch(ra -> userAuthority.getAuthorityId().equals(ra.getId()));
             if(!hasAuthority && userAuthority.isActive()) {
                 return authoritiesService.fetchAuthorityById(userAuthority.getAuthorityId()).map(authority -> {
-                    updatedRoleAuthorities.add(new KeyValuePair(authority.getAuthorityId(), authority.getAuthorityName()));
+                    updatedRoleAuthorities.add(new KeyValuePair(authority.getAuthorityId(), authority.getAuthorityName(), authority.getAuthorityDesc()));
                     return authority;
                 });
             } else if(hasAuthority && !userAuthority.isActive()) {
                 return authoritiesService.fetchAuthorityById(userAuthority.getAuthorityId()).map(authority -> {
-                    updatedRoleAuthorities.remove(new KeyValuePair(authority.getAuthorityId(), authority.getAuthorityName()));
+                    updatedRoleAuthorities.remove(new KeyValuePair(authority.getAuthorityId(), authority.getAuthorityName(), authority.getAuthorityDesc()));
                     return authority;
                 });
             }
@@ -83,7 +83,7 @@ public class UserService {
         return systemUtils.fetchRole(user.getRoleId()).flatMap(role -> {
             newUser.setRole_id(role.getRoleId());
             return userRepository.save(newUser).flatMap(savedUser -> {
-                KeyValuePair userRole = new KeyValuePair(role.getRoleId(), role.getRoleName());
+                KeyValuePair userRole = new KeyValuePair(role.getRoleId(), role.getRoleName(), role.getDescription());
                 return systemUtils.fetchAuthorities(role.getRoleId()).flatMap(roleAuthorities ->
                         Mono.just(new CreateUserResponse(savedUser.getId(), savedUser.getUsername(), savedUser.getEmail(), userRole, roleAuthorities, savedUser.is_account_active())));
             });
@@ -94,7 +94,7 @@ public class UserService {
     public Mono<CreateUserResponse> getUserById(UUID userId) {
         return userRepository.findById(userId).flatMap(savedUser ->
                 systemUtils.fetchRole(savedUser.getRole_id()).flatMap(role -> {
-            KeyValuePair userRole = new KeyValuePair(role.getRoleId(), role.getRoleName());
+            KeyValuePair userRole = new KeyValuePair(role.getRoleId(), role.getRoleName(), role.getDescription());
             return systemUtils.fetchAuthorities(role.getRoleId())
                     .flatMap(keyValuePairs -> overrideAuthorities(keyValuePairs,  savedUser.getId()))
                     .flatMap(roleAuthorities ->
@@ -106,7 +106,7 @@ public class UserService {
     public Mono<CreateUserResponse> getUserByUsername(String username) {
         return userRepository.findByUsername(username).flatMap(savedUser ->
                         systemUtils.fetchRole(savedUser.getRole_id()).flatMap(role -> {
-                            KeyValuePair userRole = new KeyValuePair(role.getRoleId(), role.getRoleName());
+                            KeyValuePair userRole = new KeyValuePair(role.getRoleId(), role.getRoleName(), role.getDescription());
                             return systemUtils.fetchAuthorities(role.getRoleId())
                                     .flatMap(keyValuePairs -> overrideAuthorities(keyValuePairs,  savedUser.getId()))
                                     .flatMap(roleAuthorities ->

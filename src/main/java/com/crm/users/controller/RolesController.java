@@ -39,7 +39,7 @@ public class RolesController {
     @PreAuthorize("hasAnyAuthority('ROLE_CREATE', 'CREATE')")
     @GetMapping("/{roleId}")
     public Mono<KeyValuePair> fetchRole(@PathVariable UUID roleId) {
-        return systemUtils.fetchRole(roleId).flatMap(role -> Mono.just(new KeyValuePair(role.getRoleId(), role.getRoleName())));
+        return systemUtils.fetchRole(roleId).flatMap(role -> Mono.just(new KeyValuePair(role.getRoleId(), role.getRoleName(), role.getDescription())));
     }
 
 }

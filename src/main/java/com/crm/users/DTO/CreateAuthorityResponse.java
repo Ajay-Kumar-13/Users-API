@@ -10,4 +10,5 @@ import java.util.UUID;
 public class CreateAuthorityResponse {
     private UUID authorityId;
     private String authorityName;
+    private String authorityDesc;
 }
