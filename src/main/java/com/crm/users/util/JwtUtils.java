@@ -2,10 +2,14 @@ package com.crm.users.util;
 
 import com.crm.users.DTO.CreateUserResponse;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -26,7 +30,14 @@ public class JwtUtils {
     }
 
     public Claims getClaims(String token) {
-        return Jwts.parser().verifyWith((SecretKey) key()).build().parseSignedClaims(token).getPayload();
+        try {
+            return Jwts.parser().verifyWith((SecretKey) key()).build().parseSignedClaims(token).getPayload();
+        } catch (ExpiredJwtException e) {
+            throw new CredentialsExpiredException("INVALID ACCESS TOKEN");
+        } catch (JwtException e) {
+             throw new BadCredentialsException("INVALID ACCESS TOKEN");
+        }
+
     }
 
     public String generateJwtFromUsername(CreateUserResponse user) {

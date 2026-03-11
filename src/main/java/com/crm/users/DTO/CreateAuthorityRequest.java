@@ -11,4 +11,6 @@ public class CreateAuthorityRequest {
 
     @NotNull
     private String authorityName;
+    @NotNull
+    private String authorityDesc;
 }

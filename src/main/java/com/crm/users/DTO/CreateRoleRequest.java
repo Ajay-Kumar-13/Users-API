@@ -12,5 +12,7 @@ public class CreateRoleRequest {
     @NotNull
     private String roleName;
     @NotNull
+    private String roleDesc;
+    @NotNull
     private List<UUID> authorities;
 }

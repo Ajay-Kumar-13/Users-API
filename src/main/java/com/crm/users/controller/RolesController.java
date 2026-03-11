@@ -31,7 +31,7 @@ public class RolesController {
     }
 
     @PreAuthorize("hasAnyAuthority('ROLE_CREATE', 'CREATE')")
-    @PostMapping("/newrole")
+    @PostMapping("")
     public Mono<CreateRoleResponse> createRole(@Valid @RequestBody CreateRoleRequest role) {
         return rolesService.createRole(role);
     }
