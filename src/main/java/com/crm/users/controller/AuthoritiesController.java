@@ -31,7 +31,7 @@ public class AuthoritiesController {
         return authoritiesService.getAllAuthorities();
     }
 
-    @PostMapping("/new-authority")
+    @PostMapping("")
     public Mono<CreateAuthorityResponse> createAuthority(@Valid @RequestBody CreateAuthorityRequest authority) {
         return authoritiesService.createAuthority(authority);
     }

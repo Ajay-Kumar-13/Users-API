@@ -40,6 +40,7 @@ public class RolesService {
         }
         Role role = new Role();
         role.setRoleName(createRoleRequest.getRoleName());
+        role.setDescription(createRoleRequest.getRoleDesc());
        return roleRepository.save(role).flatMap(r ->
                Flux.fromIterable(createRoleRequest.getAuthorities())
                        .flatMap(auth -> saveRoleAuthorities(r, auth))

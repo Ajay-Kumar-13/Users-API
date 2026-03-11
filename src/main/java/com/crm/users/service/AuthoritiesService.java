@@ -43,6 +43,7 @@ public class AuthoritiesService {
         }
         Authorities newAuthorities = new Authorities();
         newAuthorities.setAuthorityName(Authority.valueOf(authority.getAuthorityName()));
+        newAuthorities.setDescription(authority.getAuthorityDesc());
         return authorityRepository.save(newAuthorities)
                 .flatMap(savedAuthority ->
                         Mono.just(new CreateAuthorityResponse(savedAuthority.getAuthorityId(), savedAuthority.getAuthorityName().name(), savedAuthority.getDescription())))
