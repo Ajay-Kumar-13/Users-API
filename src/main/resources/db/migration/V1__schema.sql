@@ -40,3 +40,17 @@ CREATE TABLE IF NOT EXISTS refresh_tokens (
     user_id UUID NOT NULL,
     expires_at TIMESTAMP NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS refresh_tokens (
+    rt_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    token TEXT NOT NULL UNIQUE,
+    user_id UUID NOT NULL,
+    expires_at TIMESTAMP NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS refresh_tokens (
+    rt_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    token TEXT NOT NULL UNIQUE,
+    user_id UUID NOT NULL,
+    expires_at TIMESTAMP NOT NULL
+);
