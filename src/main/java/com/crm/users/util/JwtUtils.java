@@ -22,8 +22,8 @@ public class JwtUtils {
     @Value("${spring.app.jwtSecret}")
     private String jwtSecret;
 
-    @Value("${spring.app.jwtExpiration}")
-    private String jwtExpiration;
+    @Value("${spring.app.accessTokenExpiration}")
+    private String accessTokenExpiration;
 
     public Key key() {
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
@@ -45,7 +45,7 @@ public class JwtUtils {
                 .subject(user.getUsername())
                 .claim("roles", user.getRole().getName())
                 .claim("authorities", user.getAuthorities().stream().map(authority -> authority.getName()).toList())
-                .expiration(new Date(System.currentTimeMillis() + Long.parseLong(jwtExpiration)))
+                .expiration(new Date(System.currentTimeMillis() + Long.parseLong(accessTokenExpiration)))
                 .signWith(key())
                 .compact();
     }
