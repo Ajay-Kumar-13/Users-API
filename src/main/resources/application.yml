@@ -23,7 +23,7 @@ spring:
 
   app:
     jwtSecret: aGVsbG93b3JsZHRoaXNpc2FzZWN1cmVzZWNyZXQxMjM0NTY=
-    jwtExpiration: 86400000
+    accessTokenExpiration: 600000
 
 logging:
   level:
