@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class CreateUserAuthorities {
+public class OverrideAuthority {
 
     @NotNull
     private Authority authorityName;

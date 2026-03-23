@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -115,30 +114,32 @@ public class UserService {
                 .onErrorResume(DatabaseErrorUtil::handleError);
     }
 
-    public Mono<CreateUserResponse> overridePermissions(CreateUserAuthorities userAuthorities, UUID userId){
-        return getUserById(userId).flatMap(user -> {
-            boolean hasAuthority = user.getAuthorities().stream().anyMatch(kv -> kv.getName().equalsIgnoreCase(userAuthorities.getAuthorityName().name().trim()));
+    public Mono<CreateUserResponse> updateUser(UpdateUserRequest user, UUID userId) {
+        return userRepository.findById(userId)
+                .flatMap(existingUser -> {
+                    existingUser.setUsername(user.getUsername());
+                    existingUser.setEmail(user.getEmail());
+                    existingUser.set_account_active(user.isAccountActive());
+                    existingUser.setRole_id(user.getRoleId());
+                    return userRepository.save(existingUser);
+                })
+                .flatMap(savedUser -> Flux.fromIterable(user.getAuthorities())
+                        .flatMap(auth -> overridePermissions(auth, userId))
+                        .then(getUserById(userId)));
+    }
 
-            if(hasAuthority) {
-                KeyValuePair authority = user.getAuthorities().stream().filter(keyValuePair -> keyValuePair.getName().equalsIgnoreCase(userAuthorities.getAuthorityName().name().trim())).findFirst().orElse(null);
-                return userAuthorityRespository.findByUserIdAndAuthorityId(userId, authority.getId())
-                        .defaultIfEmpty(new UserAuthority(userId, authority.getId(), userAuthorities.isActive()))
-                        .flatMap(exitingUser -> {
-                           exitingUser.setActive(userAuthorities.isActive());
-                           return userAuthorityRespository.save(exitingUser);
-                        })
-                        .flatMap(savedUser -> getUserById(savedUser.getUserId()));
-            } else {
-                return authoritiesService.fetchAuthorityByName(Authority.valueOf(userAuthorities.getAuthorityName().name())).flatMap(authority ->
-                                userAuthorityRespository.findByUserIdAndAuthorityId(userId, authority.getAuthorityId())
-                                    .defaultIfEmpty(new UserAuthority(userId, authority.getAuthorityId(), userAuthorities.isActive()))
-                                    .flatMap(exitingUser -> {
-                                        exitingUser.setActive(userAuthorities.isActive());
-                                        return userAuthorityRespository.save(exitingUser);
-                                    })
-                                    .flatMap(savedUser -> getUserById(savedUser.getUserId())));
-            }
-        })
+    private Mono<Void> overridePermissions(OverrideAuthority userAuthorities, UUID userId){
+        return getUserById(userId).flatMap(user ->
+                        authoritiesService.fetchAuthorityByName(Authority.valueOf(userAuthorities.getAuthorityName().name()))
+                                .flatMap(authority ->
+                                        userAuthorityRespository.findByUserIdAndAuthorityId(userId, authority.getAuthorityId())
+                                                .defaultIfEmpty(new UserAuthority(userId, authority.getAuthorityId(), userAuthorities.isActive()))
+                                                 .flatMap(exitingUser -> {
+                                                    exitingUser.setActive(userAuthorities.isActive());
+                                                    return userAuthorityRespository.save(exitingUser);
+                                                })
+                                )
+                                .then())
         .onErrorResume(DatabaseErrorUtil::handleError);
     }
 }
