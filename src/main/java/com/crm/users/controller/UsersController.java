@@ -1,8 +1,8 @@
 package com.crm.users.controller;
 
-import com.crm.users.DTO.CreateUserAuthorities;
 import com.crm.users.DTO.CreateUserRequest;
 import com.crm.users.DTO.CreateUserResponse;
+import com.crm.users.DTO.UpdateUserRequest;
 import com.crm.users.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,12 +34,8 @@ public class UsersController {
     }
 
     @PreAuthorize("hasAnyAuthority('USER_UPDATE', 'UPDATE')")
-    @PostMapping("/{userId}/override-permissions")
-    public Mono<CreateUserResponse> overridePermissions(
-            @Valid
-            @RequestBody CreateUserAuthorities userAuthorities,
-            @PathVariable UUID userId
-    ) {
-        return userService.overridePermissions(userAuthorities, userId);
+    @PutMapping("/{userId}")
+    public Mono<CreateUserResponse> updateUser(@Valid @RequestBody UpdateUserRequest user, @PathVariable UUID userId) {
+        return userService.updateUser(user, userId);
     }
 }
