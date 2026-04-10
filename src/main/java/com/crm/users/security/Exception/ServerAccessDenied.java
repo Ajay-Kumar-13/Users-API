@@ -15,6 +15,8 @@ import reactor.core.publisher.Mono;
 
 import org.springframework.core.io.buffer.DataBuffer;
 
+import java.time.LocalDateTime;
+
 @Component
 public class ServerAccessDenied implements ServerAccessDeniedHandler {
 
@@ -23,8 +25,15 @@ public class ServerAccessDenied implements ServerAccessDeniedHandler {
 
     @Override
     public Mono<Void> handle(ServerWebExchange exchange, AccessDeniedException denied) {
-        ErrorResponse errorResponse = new ErrorResponse(Exception.AUTHENTICATION_FAILED.name(), denied.getMessage());
-        exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+        ErrorResponse errorResponse = ErrorResponse.builder()
+            .timestamp(LocalDateTime.now())
+            .status(HttpStatus.FORBIDDEN.value())
+            .error(Exception.AUTHENTICATION_FAILED.name())
+            .message("You do not have permission to access this resource")
+            .code("ACCESS_DENIED")
+            .build();
+        // Return 403 Forbidden instead of 401 Unauthorized for access denied
+        exchange.getResponse().setStatusCode(HttpStatus.FORBIDDEN);
         exchange.getResponse().getHeaders().setContentType(MediaType.APPLICATION_JSON);
         try {
             byte[] bytes = objectMapper.writeValueAsBytes(errorResponse);
