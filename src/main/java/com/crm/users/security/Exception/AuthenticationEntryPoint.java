@@ -13,7 +13,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-//No JWT token this wll get triggered
+import java.time.LocalDateTime;
+
+//No JWT token this will get triggered
 //Token parsing failure
 
 @Component
@@ -26,7 +28,14 @@ public class AuthenticationEntryPoint implements ServerAuthenticationEntryPoint 
     public Mono<Void> commence(ServerWebExchange exchange, AuthenticationException ex) {
         exchange.getResponse().getHeaders().setContentType(MediaType.APPLICATION_JSON);
         exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-        ErrorResponse errorResponse = new ErrorResponse(Exception.AUTHENTICATION_FAILED.name(), "Invalid or expired Access Token");
+        
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.UNAUTHORIZED.value())
+                .error(Exception.AUTHENTICATION_FAILED.name())
+                .message("Invalid or expired Access Token")
+                .code("AUTHENTICATION_FAILED")
+                .build();
 
         return Mono.fromCallable(() -> objectMapper.writeValueAsBytes(errorResponse)).flatMap(
                 bytes -> {

@@ -43,6 +43,7 @@ public class JwtUtils {
     public String generateJwtFromUsername(CreateUserResponse user) {
         return Jwts.builder()
                 .subject(user.getUsername())
+                .claim("id", user.getId())
                 .claim("roles", user.getRole().getName())
                 .claim("authorities", user.getAuthorities().stream().map(authority -> authority.getName()).toList())
                 .expiration(new Date(System.currentTimeMillis() + Long.parseLong(accessTokenExpiration)))

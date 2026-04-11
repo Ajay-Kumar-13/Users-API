@@ -44,8 +44,11 @@ public class AuthController {
 
     @PostMapping("/login")
     public Mono<ResponseEntity<LoginResponse>> handleLogin(@RequestBody LoginRequest loginRequest) {
+        // Use generic error message to prevent username enumeration
+        final String GENERIC_ERROR = "Authentication failed. Invalid username or password.";
+        
         return userRepository.findByUsername(loginRequest.getUsername())
-                .switchIfEmpty(Mono.error(new RuntimeException("Invalid Credentials!")))
+                .switchIfEmpty(Mono.error(new RuntimeException(GENERIC_ERROR)))
                 .flatMap(user -> {
                     if(passwordEncoder.matches(loginRequest.getPassword(),user.getPassword())) {
                              return userService.getUserByUsername(user.getUsername())
@@ -64,7 +67,7 @@ public class AuthController {
                                                              .body(new LoginResponse(jwtUtils.generateJwtFromUsername(savedUser)));
                                                  }));
                     }
-                    return Mono.error(new RuntimeException("Invalid Credentials!"));
+                    return Mono.error(new RuntimeException(GENERIC_ERROR));
                 });
     }
 
