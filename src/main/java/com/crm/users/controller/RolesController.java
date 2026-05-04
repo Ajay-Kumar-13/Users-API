@@ -17,7 +17,7 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/admin/roles")
+@RequestMapping("/api/user/admin/roles")
 @PreAuthorize("hasAnyRole('ADMIN', 'ROOT')")
 public class RolesController {
 

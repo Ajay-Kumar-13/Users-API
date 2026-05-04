@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/admin/authorities")
+@RequestMapping("/api/user/admin/authorities")
 @PreAuthorize("hasRole('ROOT')")
 public class AuthoritiesController {
 

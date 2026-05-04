@@ -19,7 +19,7 @@ import reactor.core.publisher.Mono;
 import java.time.Duration;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/user/auth")
 public class AuthController {
 
     @Autowired
