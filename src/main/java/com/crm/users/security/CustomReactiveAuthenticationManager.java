@@ -1,6 +1,5 @@
 package com.crm.users.security;
 
-import com.crm.users.security.Exception.AuthenticationEntryPoint;
 import com.crm.users.util.JwtUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +10,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
-import io.jsonwebtoken.Claims;
 
 import java.util.ArrayList;
 import java.util.List;

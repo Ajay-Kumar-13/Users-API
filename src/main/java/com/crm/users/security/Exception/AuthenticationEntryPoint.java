@@ -34,7 +34,7 @@ public class AuthenticationEntryPoint implements ServerAuthenticationEntryPoint 
                 .status(HttpStatus.UNAUTHORIZED.value())
                 .error(Exception.AUTHENTICATION_FAILED.name())
                 .message("Invalid or expired Access Token")
-                .code("AUTHENTICATION_FAILED")
+                .code(Exception.AUTHENTICATION_FAILED.name())
                 .build();
 
         return Mono.fromCallable(() -> objectMapper.writeValueAsBytes(errorResponse)).flatMap(

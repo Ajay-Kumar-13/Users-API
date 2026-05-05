@@ -19,7 +19,7 @@ import reactor.core.publisher.Mono;
 import java.time.Duration;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/user/auth")
 public class AuthController {
 
     @Autowired
@@ -58,7 +58,7 @@ public class AuthController {
                                                      ResponseCookie cookie = ResponseCookie.from("refreshToken", refreshToken.getRefreshToken())
                                                              .httpOnly(true)
                                                              .secure(true)
-                                                             .path("/api/auth")
+                                                             .path("/api/user/auth")
                                                              .maxAge(Duration.ofDays(1))
                                                              .build();
 
