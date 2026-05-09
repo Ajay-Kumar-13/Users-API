@@ -10,4 +10,5 @@ import java.util.UUID;
 @Repository
 public interface RoleRepository extends R2dbcRepository<Role, UUID> {
     Mono<Role> findByRoleId(UUID roleId);
+    Mono<Void> deleteByRoleId(UUID roleId);
 }

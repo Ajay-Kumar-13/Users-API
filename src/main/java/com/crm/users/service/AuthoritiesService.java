@@ -9,6 +9,7 @@ import com.crm.users.model.Authority;
 import com.crm.users.repository.AuthorityRepository;
 import com.crm.users.util.DatabaseErrorUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -48,5 +49,20 @@ public class AuthoritiesService {
                 .flatMap(savedAuthority ->
                         Mono.just(new CreateAuthorityResponse(savedAuthority.getAuthorityId(), savedAuthority.getAuthorityName().name(), savedAuthority.getDescription())))
                 .onErrorResume(DatabaseErrorUtil::handleError);
+    }
+
+    public Mono<CreateAuthorityResponse> updateAuthority(UUID authId, CreateAuthorityRequest authorityRequest) {
+        return authorityRepository.findByAuthorityId(authId)
+                .flatMap(authority -> {
+                    authority.setAuthorityName(Authority.valueOf(authorityRequest.getAuthorityName()));
+                    authority.setDescription(authorityRequest.getAuthorityDesc());
+                    return authorityRepository.save(authority);
+                })
+                .flatMap(authority -> Mono.just(new CreateAuthorityResponse(authority.getAuthorityId(), authority.getAuthorityName().name(), authority.getDescription())));
+    }
+
+    public Mono<ResponseEntity<String>> deleteAuthority(UUID authorityId) {
+        return authorityRepository.deleteByAuthorityId(authorityId)
+                .then(Mono.just(ResponseEntity.ok().body("Deleted Successfully!")));
     }
 }
