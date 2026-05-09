@@ -3,7 +3,7 @@ spring:
     name: users
   app:
     jwtSecret: ${JWT_SECRET}
-    jwtExpiration: 86400000
+    jwtExpiration: 300000
 
   # Loads AWS Secrets
   config:
@@ -42,13 +42,3 @@ logging:
     org.springframework.core.env: TRACE
     com.crm.users: DEBUG
     org.flywaydb: DEBUG
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health
-  endpoint:
-    health:
-      probes:
-        enabled: true

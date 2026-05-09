@@ -11,6 +11,7 @@ import com.crm.users.repository.RoleAuthoritiesRepository;
 import com.crm.users.repository.RoleRepository;
 import com.crm.users.util.DatabaseErrorUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -48,4 +49,17 @@ public class RolesService {
                .onErrorResume(DatabaseErrorUtil::handleError);
     }
 
+    public Mono<CreateRoleResponse> updateRole(UUID roleId, CreateRoleRequest updatedRole) {
+        return roleRepository.findByRoleId(roleId).flatMap(role -> {
+            role.setRoleName(updatedRole.getRoleName());
+            role.setDescription(updatedRole.getRoleDesc());
+            return roleRepository.save(role);
+        })
+        .flatMap(role -> Mono.just(new CreateRoleResponse(role.getRoleId(), role.getRoleName(), role.getDescription())));
+    }
+
+    public Mono<ResponseEntity<String>> deleteRole(UUID roleId) {
+        return roleRepository.deleteByRoleId(roleId)
+                .then(Mono.just(ResponseEntity.ok().body("Deleted Successfully!")));
+    }
 }

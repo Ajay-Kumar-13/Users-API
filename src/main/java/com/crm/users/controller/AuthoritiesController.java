@@ -7,6 +7,7 @@ import com.crm.users.service.AuthoritiesService;
 import com.crm.users.util.SystemUtils;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -39,5 +40,15 @@ public class AuthoritiesController {
     @GetMapping("/{roleId}")
     public Mono<List<KeyValuePair>> fetchRoleAuthorities(@PathVariable UUID roleId) {
         return systemUtils.fetchAuthorities(roleId);
+    }
+
+    @PutMapping("/authId")
+    public Mono<CreateAuthorityResponse> updateAuthority(@PathVariable UUID authId, @RequestBody CreateAuthorityRequest authority) {
+        return authoritiesService.updateAuthority(authId, authority);
+    }
+
+    @DeleteMapping("/authId")
+    public Mono<ResponseEntity<String>> deleteAuthority(@PathVariable UUID authId) {
+        return authoritiesService.deleteAuthority(authId);
     }
 }

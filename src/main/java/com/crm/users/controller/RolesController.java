@@ -8,6 +8,7 @@ import com.crm.users.service.RolesService;
 import com.crm.users.util.SystemUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -42,4 +43,15 @@ public class RolesController {
         return systemUtils.fetchRole(roleId).flatMap(role -> Mono.just(new KeyValuePair(role.getRoleId(), role.getRoleName(), role.getDescription())));
     }
 
+    @PreAuthorize("hasAnyAuthority('ROLE_UPDATE', 'UPDATE')")
+    @PutMapping("/{roleId}")
+    public Mono<CreateRoleResponse> updateRole(@PathVariable UUID roleId, @RequestBody CreateRoleRequest role) {
+        return rolesService.updateRole(roleId, role);
+    }
+
+    @PreAuthorize("hasAnyAuthority('ROLE_DELETE', 'DELETE')")
+    @DeleteMapping("/{roleId}")
+    public Mono<ResponseEntity<String>> deleteRole(@PathVariable UUID roleId) {
+        return rolesService.deleteRole(roleId);
+    }
 }
