@@ -18,7 +18,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/user/admin/authorities")
-@PreAuthorize("hasRole('ROOT')")
+@PreAuthorize("hasAnyRole('ADMIN', 'ROOT')")
 public class AuthoritiesController {
 
     @Autowired
@@ -32,6 +32,7 @@ public class AuthoritiesController {
         return authoritiesService.getAllAuthorities();
     }
 
+    @PreAuthorize("hasAnyAuthority('AUTHORITY_CREATE', 'CREATE')")
     @PostMapping("")
     public Mono<CreateAuthorityResponse> createAuthority(@Valid @RequestBody CreateAuthorityRequest authority) {
         return authoritiesService.createAuthority(authority);
@@ -42,11 +43,13 @@ public class AuthoritiesController {
         return systemUtils.fetchAuthorities(roleId);
     }
 
+    @PreAuthorize("hasAnyAuthority('AUTHORITY_UPDATE', 'UPDATE')")
     @PutMapping("/authId")
     public Mono<CreateAuthorityResponse> updateAuthority(@PathVariable UUID authId, @RequestBody CreateAuthorityRequest authority) {
         return authoritiesService.updateAuthority(authId, authority);
     }
 
+    @PreAuthorize("hasAnyAuthority('AUTHORITY_DELETE', 'DELETE')")
     @DeleteMapping("/authId")
     public Mono<ResponseEntity<String>> deleteAuthority(@PathVariable UUID authId) {
         return authoritiesService.deleteAuthority(authId);
