@@ -18,7 +18,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/user/admin/authorities")
-@PreAuthorize("hasAnyRole('ADMIN', 'ROOT')")
+@PreAuthorize("hasAnyRole('ADMIN', 'ROOT', 'EMPLOYEE')")
 public class AuthoritiesController {
 
     @Autowired
