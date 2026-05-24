@@ -3,7 +3,6 @@ package com.crm.users.controller;
 import com.crm.users.DTO.CreateUserResponse;
 import com.crm.users.DTO.LoginRequest;
 import com.crm.users.DTO.LoginResponse;
-import com.crm.users.DTO.RefreshToken;
 import com.crm.users.repository.UserRepository;
 import com.crm.users.service.RefreshTokenService;
 import com.crm.users.service.UserService;

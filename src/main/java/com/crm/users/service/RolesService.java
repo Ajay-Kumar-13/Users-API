@@ -3,7 +3,6 @@ package com.crm.users.service;
 import com.crm.users.DTO.CreateRoleRequest;
 import com.crm.users.DTO.CreateRoleResponse;
 import com.crm.users.Exception.Exception;
-import com.crm.users.Exception.RoleAuthoritiesException;
 import com.crm.users.Exception.RolesException;
 import com.crm.users.model.Role;
 import com.crm.users.model.RoleAuthorities;
