@@ -24,9 +24,6 @@ import java.util.UUID;
 public class UserService {
 
    private final UserRepository userRepository;
-   private final RoleRepository roleRepository;
-   private final RoleAuthoritiesRepository roleAuthoritiesRepository;
-   private final AuthorityRepository authorityRepository;
    private final UserAuthorityRespository userAuthorityRespository;
    private final SystemUtils systemUtils;
 

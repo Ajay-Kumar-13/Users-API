@@ -3,7 +3,6 @@ package com.crm.users.controller;
 import com.crm.users.DTO.CreateRoleRequest;
 import com.crm.users.DTO.CreateRoleResponse;
 import com.crm.users.DTO.KeyValuePair;
-import com.crm.users.model.Role;
 import com.crm.users.service.RolesService;
 import com.crm.users.util.SystemUtils;
 import jakarta.validation.Valid;
