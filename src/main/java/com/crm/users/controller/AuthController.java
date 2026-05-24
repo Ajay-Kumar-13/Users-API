@@ -72,7 +72,7 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
-    public Mono<LoginResponse> refresh(@CookieValue("refreshToken") String token) {
+    public Mono<ResponseEntity<LoginResponse>> refresh(@CookieValue("refreshToken") String token) {
         return refreshTokenService.validateRefreshToken(token)
                 .flatMap(refreshToken -> refreshTokenService.createRefreshToken(refreshToken.getUser().getId())
                         .flatMap(newRefreshToken -> {
@@ -81,7 +81,15 @@ public class AuthController {
                             return refreshTokenService.deleteRefreshToken(refreshToken.getRefreshToken())
                                     .flatMap(responseEntity -> {
                                         if(responseEntity.hasBody()) {
-                                            return Mono.just(new LoginResponse(accessToken));
+                                            ResponseCookie cookie = ResponseCookie.from("refreshToken", newRefreshToken.getRefreshToken())
+                                                .httpOnly(true)
+                                                .path("/api/user/auth")
+                                                .maxAge(Duration.ofDays(1))
+                                                .build();
+                                            // Return a response entity and udpate the refreshToken cookie value.
+                                            return Mono.just(ResponseEntity.ok()
+                                                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                                                .body(new LoginResponse(accessToken)));
                                         }
                                         return Mono.error(new RuntimeException("Invalid Refresh Token!"));
                                     });

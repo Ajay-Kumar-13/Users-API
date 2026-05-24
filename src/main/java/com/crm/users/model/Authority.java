@@ -13,6 +13,9 @@ public enum Authority {
     ROLE_READ,
     ROLE_UPDATE,
     ROLE_DELETE,
-    TEST1,
-    TEST2
+    LEAD_STATUS_UPDATE,
+    LEAD_UPDATE,
+    LEAD_READ,
+    LEAD_DELETE,
+    LEAD_CREATE
 }
