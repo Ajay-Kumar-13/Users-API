@@ -2,6 +2,8 @@ package com.crm.users.service;
 
 import com.crm.users.DTO.CreateRoleRequest;
 import com.crm.users.DTO.CreateRoleResponse;
+import com.crm.users.DTO.OverrideAuthority;
+import com.crm.users.DTO.UpdateRoleRequest;
 import com.crm.users.Exception.Exception;
 import com.crm.users.Exception.RolesException;
 import com.crm.users.model.Role;
@@ -29,9 +31,10 @@ public class RolesService {
                 .onErrorResume(DatabaseErrorUtil::handleError);
     }
 
-    private Mono<RoleAuthorities> saveRoleAuthorities(Role r, UUID auth) {
+    private Mono<Void> saveRoleAuthorities(Role r, UUID auth) {
         return roleAuthorities.save(new RoleAuthorities(r.getRoleId(), auth))
-                .onErrorResume(DatabaseErrorUtil::handleError);
+                .onErrorResume(DatabaseErrorUtil::handleError)
+                .then();
     }
 
     public Mono<CreateRoleResponse> createRole(CreateRoleRequest createRoleRequest) {
@@ -48,13 +51,30 @@ public class RolesService {
                .onErrorResume(DatabaseErrorUtil::handleError);
     }
 
-    public Mono<CreateRoleResponse> updateRole(UUID roleId, CreateRoleRequest updatedRole) {
-        return roleRepository.findByRoleId(roleId).flatMap(role -> {
+    public Mono<CreateRoleResponse> updateRole(UUID roleId, UpdateRoleRequest updatedRole) {
+    return roleRepository.findByRoleId(roleId)
+        .flatMap(role -> {
             role.setRoleName(updatedRole.getRoleName());
             role.setDescription(updatedRole.getRoleDesc());
             return roleRepository.save(role);
         })
-        .flatMap(role -> Mono.just(new CreateRoleResponse(role.getRoleId(), role.getRoleName(), role.getDescription())));
+        .flatMap(savedRole -> Flux.fromIterable(updatedRole.getAuthorities())
+            .flatMap(auth -> processAuthority(auth, savedRole, roleId)) 
+            .then(Mono.just(savedRole))
+        )
+        .map(role -> new CreateRoleResponse(role.getRoleId(), role.getRoleName(), role.getDescription()));
+    }
+
+    private Mono<Void> processAuthority(OverrideAuthority auth, Role savedRole, UUID roleId) {
+        if (auth.isActive()) {
+            return saveRoleAuthorities(savedRole, auth.getAuthId());
+        } else {
+            return rmAuthorityFromRole(auth.getAuthId(), roleId);
+        }
+    }
+
+    private Mono<Void> rmAuthorityFromRole(UUID authId, UUID roleId) {
+        return roleAuthorities.deleteByRidAndAid(roleId, authId);
     }
 
     public Mono<ResponseEntity<String>> deleteRole(UUID roleId) {
