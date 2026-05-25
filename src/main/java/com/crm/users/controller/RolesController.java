@@ -3,6 +3,7 @@ package com.crm.users.controller;
 import com.crm.users.DTO.CreateRoleRequest;
 import com.crm.users.DTO.CreateRoleResponse;
 import com.crm.users.DTO.KeyValuePair;
+import com.crm.users.DTO.UpdateRoleRequest;
 import com.crm.users.service.RolesService;
 import com.crm.users.util.SystemUtils;
 import jakarta.validation.Valid;
@@ -44,7 +45,7 @@ public class RolesController {
 
     @PreAuthorize("hasAnyAuthority('ROLE_UPDATE', 'UPDATE')")
     @PutMapping("/{roleId}")
-    public Mono<CreateRoleResponse> updateRole(@PathVariable UUID roleId, @RequestBody CreateRoleRequest role) {
+    public Mono<CreateRoleResponse> updateRole(@PathVariable UUID roleId, @RequestBody UpdateRoleRequest role) {
         return rolesService.updateRole(roleId, role);
     }
 
