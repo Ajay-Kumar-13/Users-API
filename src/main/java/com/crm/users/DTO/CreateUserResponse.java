@@ -1,6 +1,5 @@
 package com.crm.users.DTO;
 
-import com.crm.users.model.Authorities;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

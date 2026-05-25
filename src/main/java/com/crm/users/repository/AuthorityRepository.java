@@ -11,4 +11,6 @@ import java.util.UUID;
 @Repository
 public interface AuthorityRepository extends R2dbcRepository<Authorities, UUID> {
     Mono<Authorities> findByAuthorityName(Authority authorityName);
+    Mono<Authorities> findByAuthorityId(UUID authorityId);
+    Mono<Void> deleteByAuthorityId(UUID authorityId);
 }
