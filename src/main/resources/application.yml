@@ -4,12 +4,12 @@ spring:
 
   r2dbc:
     url: r2dbc:postgresql://localhost:5432/users
-    username: ajay
+    username: postgres
     password: ajay
 
   datasource:
     url: jdbc:postgresql://localhost:5432/users
-    username: ajay
+    username: postgres
     password: ajay
 
   sql:
