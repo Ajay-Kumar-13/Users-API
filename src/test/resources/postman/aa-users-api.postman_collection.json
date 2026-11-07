@@ -1,0 +1,57 @@
+{
+  "info": {
+    "_postman_id": "1b550576-c536-42db-8f7d-d0dd81acee31",
+    "name": "aa-users-api",
+    "description": "### Welcome to Postman! This is your first collection. \n\nCollections are your starting point for building and testing APIs. You can use this one to:\n\n• Group related requests\n• Test your API in real-world scenarios\n• Document and share your requests\n\nUpdate the name and overview whenever you’re ready to make it yours.\n\n[Learn more about Postman Collections.](https://learning.postman.com/docs/collections/collections-overview/)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "50448566",
+    "_collection_link": "https://go.postman.co/collection/50448566-1b550576-c536-42db-8f7d-d0dd81acee31?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "login",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\n    pm.response.to.have.status(200);\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"username\": \"superuser\",\n    \"password\": \"ajay\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://cuddly-parakeet-wx6gv9vwq7rc967-8080.app.github.dev/api/user/auth/login",
+          "protocol": "https",
+          "host": [
+            "cuddly-parakeet-wx6gv9vwq7rc967-8080",
+            "app",
+            "github",
+            "dev"
+          ],
+          "path": [
+            "api",
+            "user",
+            "auth",
+            "login"
+          ]
+        },
+        "description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+      },
+      "response": []
+    }
+  ]
+}

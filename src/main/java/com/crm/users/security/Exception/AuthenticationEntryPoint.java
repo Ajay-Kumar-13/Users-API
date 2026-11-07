@@ -2,7 +2,7 @@ package com.crm.users.security.Exception;
 
 import com.crm.users.DTO.ErrorResponse;
 import com.crm.users.Exception.Exception;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpStatus;

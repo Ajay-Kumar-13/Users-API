@@ -2,8 +2,7 @@ package com.crm.users.security.Exception;
 
 import com.crm.users.DTO.ErrorResponse;
 import com.crm.users.Exception.Exception;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -35,13 +34,11 @@ public class ServerAccessDenied implements ServerAccessDeniedHandler {
         // Return 403 Forbidden instead of 401 Unauthorized for access denied
         exchange.getResponse().setStatusCode(HttpStatus.FORBIDDEN);
         exchange.getResponse().getHeaders().setContentType(MediaType.APPLICATION_JSON);
-        try {
-            byte[] bytes = objectMapper.writeValueAsBytes(errorResponse);
-            DataBuffer dataBuffer = exchange.getResponse().bufferFactory().wrap(bytes);
-            return exchange.getResponse().writeWith(Mono.just(dataBuffer));
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+        return Mono.fromCallable(() -> objectMapper.writeValueAsBytes(errorResponse))
+            .flatMap(bytes -> {
+                DataBuffer dataBuffer = exchange.getResponse().bufferFactory().wrap(bytes);
+                return exchange.getResponse().writeWith(Mono.just(dataBuffer));
+            });
 
     }
 }

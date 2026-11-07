@@ -4,12 +4,12 @@ spring:
 
   r2dbc:
     url: r2dbc:postgresql://localhost:5432/users
-    username: ajay
+    username: postgres
     password: ajay
 
   datasource:
     url: jdbc:postgresql://localhost:5432/users
-    username: ajay
+    username: postgres
     password: ajay
 
   sql:
@@ -24,6 +24,12 @@ spring:
   app:
     jwtSecret: aGVsbG93b3JsZHRoaXNpc2FzZWN1cmVzZWNyZXQxMjM0NTY=
     accessTokenExpiration: 600000
+
+  # AWS Secrets Manager starter tries to initialize an AWS client even when you’re using the default profile 
+  cloud:
+    aws:
+      region:
+        static: ap-south-1
 
 logging:
   level:
